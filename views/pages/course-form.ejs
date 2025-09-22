@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Online Course Platform</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">CourseHub</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/courses" class="nav-link">Courses</a>
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
+                    <a href="/admin/courses" class="nav-link">Manage Courses</a>
+                    <% if (user.role === 'owner') { %>
+                        <a href="/admin/users" class="nav-link">Manage Users</a>
+                    <% } %>
+                    
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 text-gray-700 hover:text-primary">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span><%= user.name %></span>
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                <div class="px-4 py-2 text-sm text-gray-500 border-b">
+                                    <div class="font-medium"><%= user.name %></div>
+                                    <div class="text-xs capitalize"><%= user.role %></div>
+                                </div>
+                                <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                </a>
+                                <form action="/auth/logout" method="POST" class="block">
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="bg-white py-8 border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center">
+                <a href="/admin/courses" class="text-gray-600 hover:text-primary mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800"><%= title %></h1>
+                    <p class="text-gray-600 mt-2">
+                        <%= isEdit ? 'Edit course details and settings' : 'Create a new course for students' %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Form -->
+    <section class="py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <form action="<%= isEdit ? `/admin/courses/${course.id}/edit` : '/admin/courses/add' %>" method="POST" class="space-y-8">
+                <!-- Basic Information -->
+                <div class="card">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Basic Information</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Course Title *</label>
+                            <input type="text" id="title" name="title" required 
+                                   value="<%= course ? course.title : '' %>"
+                                   class="form-input" 
+                                   placeholder="Enter course title">
+                        </div>
+                        
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                            <select id="category" name="category" required class="form-input">
+                                <option value="">Select a category</option>
+                                <option value="Programming" <%= course && course.category === 'Programming' ? 'selected' : '' %>>Programming</option>
+                                <option value="Web Development" <%= course && course.category === 'Web Development' ? 'selected' : '' %>>Web Development</option>
+                                <option value="Data Science" <%= course && course.category === 'Data Science' ? 'selected' : '' %>>Data Science</option>
+                                <option value="Security" <%= course && course.category === 'Security' ? 'selected' : '' %>>Security</option>
+                                <option value="Cloud Computing" <%= course && course.category === 'Cloud Computing' ? 'selected' : '' %>>Cloud Computing</option>
+                                <option value="Mobile Development" <%= course && course.category === 'Mobile Development' ? 'selected' : '' %>>Mobile Development</option>
+                                <option value="DevOps" <%= course && course.category === 'DevOps' ? 'selected' : '' %>>DevOps</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-2">Difficulty Level *</label>
+                            <select id="difficulty" name="difficulty" required class="form-input">
+                                <option value="">Select difficulty</option>
+                                <option value="Beginner" <%= course && course.difficulty === 'Beginner' ? 'selected' : '' %>>Beginner</option>
+                                <option value="Intermediate" <%= course && course.difficulty === 'Intermediate' ? 'selected' : '' %>>Intermediate</option>
+                                <option value="Advanced" <%= course && course.difficulty === 'Advanced' ? 'selected' : '' %>>Advanced</option>
+                            </select>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Course Description *</label>
+                            <textarea id="description" name="description" required rows="4" 
+                                      class="form-input" 
+                                      placeholder="Provide a detailed description of what students will learn in this course"><%= course ? course.description : '' %></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing and Settings -->
+                <div class="card">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Pricing and Settings</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Price (USD)</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                                <input type="number" id="price" name="price" min="0" step="0.01" 
+                                       value="<%= course ? course.price : '0' %>"
+                                       class="form-input pl-8" 
+                                       placeholder="0.00">
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">Set to 0 for free course</p>
+                        </div>
+                        
+                        <div>
+                            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">Course Duration</label>
+                            <input type="text" id="duration" name="duration" 
+                                   value="<%= course ? course.duration : '4 weeks' %>"
+                                   class="form-input" 
+                                   placeholder="e.g., 4 weeks, 2 months">
+                        </div>
+                        
+                        <div>
+                            <label for="lessons" class="block text-sm font-medium text-gray-700 mb-2">Number of Lessons</label>
+                            <input type="number" id="lessons" name="lessons" min="1" 
+                                   value="<%= course ? course.lessons : '10' %>"
+                                   class="form-input" 
+                                   placeholder="10">
+                        </div>
+                        
+                        <div>
+                            <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
+                            <input type="text" id="instructor" name="instructor" readonly
+                                   value="<%= user.name %>"
+                                   class="form-input bg-gray-100" 
+                                   placeholder="Instructor name">
+                            <p class="text-sm text-gray-500 mt-1">Auto-filled with your name</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Content Preview -->
+                <div class="card">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Course Preview</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800 mb-2">Sample Course Syllabus</h3>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center p-2 bg-white rounded border">
+                                        <div class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 text-sm">1</div>
+                                        <span class="text-gray-700">Introduction and Setup</span>
+                                    </div>
+                                    <div class="flex items-center p-2 bg-white rounded border">
+                                        <div class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 text-sm">2</div>
+                                        <span class="text-gray-700">Basic Concepts</span>
+                                    </div>
+                                    <div class="flex items-center p-2 bg-white rounded border">
+                                        <div class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 text-sm">3</div>
+                                        <span class="text-gray-700">Practical Examples</span>
+                                    </div>
+                                    <div class="flex items-center p-2 bg-white rounded border">
+                                        <div class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 text-sm">4</div>
+                                        <span class="text-gray-700">Advanced Topics</span>
+                                    </div>
+                                    <div class="flex items-center p-2 bg-white rounded border">
+                                        <div class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 text-sm">5</div>
+                                        <span class="text-gray-700">Final Project</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">This is a sample syllabus. In a full implementation, you would be able to customize lesson titles and content.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-800 mb-2">Course Image</h3>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                <i class="fas fa-image text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-gray-500">Course image upload would be implemented here</p>
+                                <p class="text-sm text-gray-400">Currently using default placeholder images</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-between pt-6 border-t">
+                    <a href="/admin/courses" class="btn btn-secondary">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                    
+                    <div class="flex space-x-4">
+                        <% if (isEdit) { %>
+                            <button type="button" class="btn btn-warning" onclick="window.open('/courses/<%= course.id %>', '_blank')">
+                                <i class="fas fa-eye mr-2"></i>Preview Course
+                            </button>
+                        <% } %>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-2"></i>
+                            <%= isEdit ? 'Update Course' : 'Create Course' %>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold">CourseHub</span>
+                    </div>
+                    <p class="text-gray-300">Your premier destination for IT education and professional development.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="/courses" class="text-gray-300 hover:text-white transition-colors">Courses</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/courses?category=Programming" class="text-gray-300 hover:text-white transition-colors">Programming</a></li>
+                        <li><a href="/courses?category=Data Science" class="text-gray-300 hover:text-white transition-colors">Data Science</a></li>
+                        <li><a href="/courses?category=Web Development" class="text-gray-300 hover:text-white transition-colors">Web Development</a></li>
+                        <li><a href="/courses?category=Security" class="text-gray-300 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-envelope mr-2"></i>info@coursehub.com</li>
+                        <li><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Education St, Learning City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2023 CourseHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const category = document.getElementById('category').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const description = document.getElementById('description').value.trim();
+            
+            if (!title || !category || !difficulty || !description) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        });
+    </script>
+</body>
+</html>

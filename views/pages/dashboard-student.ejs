@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Online Course Platform</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">CourseHub</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/courses" class="nav-link">Courses</a>
+                    <a href="/dashboard" class="nav-link active">Dashboard</a>
+                    
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 text-gray-700 hover:text-primary">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span><%= user.name %></span>
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                <div class="px-4 py-2 text-sm text-gray-500 border-b">
+                                    <div class="font-medium"><%= user.name %></div>
+                                    <div class="text-xs capitalize"><%= user.role %></div>
+                                </div>
+                                <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                </a>
+                                <form action="/auth/logout" method="POST" class="block">
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="bg-white py-8 border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Welcome back, <%= user.name %>!</h1>
+                    <p class="text-gray-600 mt-2">Continue your learning journey</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-primary"><%= totalEnrolled %></div>
+                    <div class="text-sm text-gray-600">Enrolled Courses</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <section class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2">
+                    <!-- My Courses -->
+                    <div class="card mb-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">My Courses</h2>
+                            <a href="/courses" class="btn btn-primary">
+                                <i class="fas fa-plus mr-2"></i>Browse More
+                            </a>
+                        </div>
+                        
+                        <% if (enrolledCourses.length === 0) { %>
+                            <div class="text-center py-12">
+                                <i class="fas fa-book-open text-gray-400 text-6xl mb-4"></i>
+                                <h3 class="text-xl font-medium text-gray-600 mb-2">No enrolled courses yet</h3>
+                                <p class="text-gray-500 mb-4">Start your learning journey by enrolling in a course</p>
+                                <a href="/courses" class="btn btn-primary">
+                                    Browse Courses
+                                </a>
+                            </div>
+                        <% } else { %>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <% enrolledCourses.forEach(course => { %>
+                                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                        <div class="aspect-video bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                                            <i class="fas fa-play-circle text-3xl text-gray-400"></i>
+                                        </div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded"><%= course.category %></span>
+                                            <span class="text-xs text-gray-500">
+                                                Enrolled <%= new Date(course.enrolledAt).toLocaleDateString() %>
+                                            </span>
+                                        </div>
+                                        <h3 class="text-lg font-bold text-gray-800 mb-2"><%= course.title %></h3>
+                                        <p class="text-gray-600 text-sm mb-4 line-clamp-2"><%= course.description %></p>
+                                        
+                                        <!-- Progress Bar -->
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                                <span>Progress</span>
+                                                <span>25%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-primary h-2 rounded-full" style="width: 25%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center text-sm text-gray-500">
+                                                <i class="fas fa-video mr-1"></i>
+                                                <span><%= course.lessons %> lessons</span>
+                                                <i class="fas fa-clock ml-3 mr-1"></i>
+                                                <span><%= course.duration %></span>
+                                            </div>
+                                            <a href="/courses/<%= course.id %>" class="btn btn-sm btn-primary">
+                                                Continue
+                                            </a>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
+                        <div class="space-y-4">
+                            <% if (enrolledCourses.length > 0) { %>
+                                <% enrolledCourses.slice(0, 3).forEach(course => { %>
+                                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                                        <div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                            <i class="fas fa-book-open"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="font-medium text-gray-800">Enrolled in <%= course.title %></h3>
+                                            <p class="text-sm text-gray-600">
+                                                <%= new Date(course.enrolledAt).toLocaleDateString('en-US', { 
+                                                    year: 'numeric', 
+                                                    month: 'long', 
+                                                    day: 'numeric' 
+                                                }) %>
+                                            </p>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-gray-400"></i>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="text-center py-8">
+                                    <i class="fas fa-history text-gray-400 text-4xl mb-2"></i>
+                                    <p class="text-gray-500">No recent activity</p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div>
+                    <!-- Learning Stats -->
+                    <div class="card mb-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Learning Stats</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fas fa-book text-primary mr-2"></i>
+                                    <span class="text-gray-600">Courses Enrolled</span>
+                                </div>
+                                <span class="font-bold text-gray-800"><%= totalEnrolled %></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fas fa-video text-primary mr-2"></i>
+                                    <span class="text-gray-600">Lessons Completed</span>
+                                </div>
+                                <span class="font-bold text-gray-800"><%= Math.floor(totalEnrolled * 2.5) %></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-primary mr-2"></i>
+                                    <span class="text-gray-600">Hours Learned</span>
+                                </div>
+                                <span class="font-bold text-gray-800"><%= Math.floor(totalEnrolled * 4.2) %></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fas fa-certificate text-primary mr-2"></i>
+                                    <span class="text-gray-600">Certificates</span>
+                                </div>
+                                <span class="font-bold text-gray-800"><%= Math.floor(totalEnrolled * 0.3) %></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommended Courses -->
+                    <div class="card">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Recommended for You</h3>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-primary pl-4">
+                                <h4 class="font-medium text-gray-800">Advanced JavaScript</h4>
+                                <p class="text-sm text-gray-600">Take your JS skills to the next level</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-primary font-medium">Free</span>
+                                    <span class="text-xs text-gray-500">Beginner</span>
+                                </div>
+                            </div>
+                            <div class="border-l-4 border-primary pl-4">
+                                <h4 class="font-medium text-gray-800">React Fundamentals</h4>
+                                <p class="text-sm text-gray-600">Build modern web applications</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-primary font-medium">$99</span>
+                                    <span class="text-xs text-gray-500">Intermediate</span>
+                                </div>
+                            </div>
+                            <div class="border-l-4 border-primary pl-4">
+                                <h4 class="font-medium text-gray-800">Node.js Backend</h4>
+                                <p class="text-sm text-gray-600">Server-side development with Node</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-primary font-medium">$149</span>
+                                    <span class="text-xs text-gray-500">Intermediate</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/courses" class="btn btn-primary w-full mt-4">
+                            View All Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold">CourseHub</span>
+                    </div>
+                    <p class="text-gray-300">Your premier destination for IT education and professional development.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="/courses" class="text-gray-300 hover:text-white transition-colors">Courses</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/courses?category=Programming" class="text-gray-300 hover:text-white transition-colors">Programming</a></li>
+                        <li><a href="/courses?category=Data Science" class="text-gray-300 hover:text-white transition-colors">Data Science</a></li>
+                        <li><a href="/courses?category=Web Development" class="text-gray-300 hover:text-white transition-colors">Web Development</a></li>
+                        <li><a href="/courses?category=Security" class="text-gray-300 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-envelope mr-2"></i>info@coursehub.com</li>
+                        <li><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Education St, Learning City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2023 CourseHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

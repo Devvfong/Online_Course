@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Online Course Platform</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">CourseHub</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/courses" class="nav-link">Courses</a>
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
+                    <a href="/admin/courses" class="nav-link">Manage Courses</a>
+                    <a href="/admin/users" class="nav-link active">Manage Users</a>
+                    
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 text-gray-700 hover:text-primary">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span><%= user.name %></span>
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                <div class="px-4 py-2 text-sm text-gray-500 border-b">
+                                    <div class="font-medium"><%= user.name %></div>
+                                    <div class="text-xs capitalize"><%= user.role %></div>
+                                </div>
+                                <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                </a>
+                                <form action="/auth/logout" method="POST" class="block">
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="bg-white py-8 border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">User Management</h1>
+                    <p class="text-gray-600 mt-2">Manage admins and students on the platform</p>
+                </div>
+                <button class="btn btn-primary" onclick="alert('Add User functionality would be implemented here')">
+                    <i class="fas fa-user-plus mr-2"></i>Add User
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Stats -->
+    <section class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card text-center">
+                    <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-tie text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800 mb-2"><%= admins.length %></div>
+                    <div class="text-gray-600">Admins</div>
+                </div>
+                <div class="card text-center">
+                    <div class="bg-success text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800 mb-2"><%= students.length %></div>
+                    <div class="text-gray-600">Students</div>
+                </div>
+                <div class="card text-center">
+                    <div class="bg-warning text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-plus text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800 mb-2">+<%= Math.floor(Math.random() * 20) + 5 %></div>
+                    <div class="text-gray-600">New This Month</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Management -->
+    <section class="pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Admins -->
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Platform Admins</h2>
+                        <button class="btn btn-primary btn-sm" onclick="alert('Add Admin functionality would be implemented here')">
+                            <i class="fas fa-plus mr-1"></i>Add Admin
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <% admins.forEach(admin => { %>
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800"><%= admin.name %></h3>
+                                        <p class="text-sm text-gray-600"><%= admin.email %></p>
+                                        <span class="text-xs bg-primary text-white px-2 py-1 rounded">Admin</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-primary hover:text-secondary" title="Edit Admin" 
+                                            onclick="alert('Edit Admin functionality would be implemented here')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800" title="Remove Admin" 
+                                            onclick="confirm('Remove this admin? They will lose admin privileges.') && alert('Remove admin functionality would be implemented here')">
+                                        <i class="fas fa-user-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    
+                    <% if (admins.length === 0) { %>
+                        <div class="text-center py-8">
+                            <i class="fas fa-user-tie text-gray-400 text-4xl mb-2"></i>
+                            <p class="text-gray-500">No admins found</p>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Students -->
+                <div class="card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Students</h2>
+                        <span class="text-sm text-gray-500"><%= students.length %> total</span>
+                    </div>
+                    
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        <% students.forEach(student => { %>
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-success text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-user-graduate"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800"><%= student.name %></h3>
+                                        <p class="text-sm text-gray-600"><%= student.email %></p>
+                                        <span class="text-xs bg-success text-white px-2 py-1 rounded">Student</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-800" title="View Student Details" 
+                                            onclick="alert('View student details functionality would be implemented here')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-warning hover:text-yellow-600" title="Promote to Admin" 
+                                            onclick="confirm('Promote <%= student.name %> to admin?') && alert('Promote to admin functionality would be implemented here')">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800" title="Remove Student" 
+                                            onclick="confirm('Remove this student? All their progress will be lost.') && alert('Remove student functionality would be implemented here')">
+                                        <i class="fas fa-user-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    
+                    <% if (students.length === 0) { %>
+                        <div class="text-center py-8">
+                            <i class="fas fa-user-graduate text-gray-400 text-4xl mb-2"></i>
+                            <p class="text-gray-500">No students found</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <!-- User Activity -->
+            <div class="card mt-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent User Activity</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-800">New student registration</h3>
+                            <p class="text-sm text-gray-600">Alice Johnson joined the platform</p>
+                        </div>
+                        <span class="text-xs text-gray-500">2 hours ago</span>
+                    </div>
+                    
+                    <div class="flex items-center p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-800">Course enrollment</h3>
+                            <p class="text-sm text-gray-600">5 new enrollments today</p>
+                        </div>
+                        <span class="text-xs text-gray-500">4 hours ago</span>
+                    </div>
+                    
+                    <div class="flex items-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="bg-yellow-500 text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-800">Admin promotion</h3>
+                            <p class="text-sm text-gray-600">John Smith was promoted to admin</p>
+                        </div>
+                        <span class="text-xs text-gray-500">1 day ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold">CourseHub</span>
+                    </div>
+                    <p class="text-gray-300">Your premier destination for IT education and professional development.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="/courses" class="text-gray-300 hover:text-white transition-colors">Courses</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/courses?category=Programming" class="text-gray-300 hover:text-white transition-colors">Programming</a></li>
+                        <li><a href="/courses?category=Data Science" class="text-gray-300 hover:text-white transition-colors">Data Science</a></li>
+                        <li><a href="/courses?category=Web Development" class="text-gray-300 hover:text-white transition-colors">Web Development</a></li>
+                        <li><a href="/courses?category=Security" class="text-gray-300 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-envelope mr-2"></i>info@coursehub.com</li>
+                        <li><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Education St, Learning City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2023 CourseHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

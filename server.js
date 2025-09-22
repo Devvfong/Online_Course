@@ -42,9 +42,14 @@ app.use('/admin', adminRoutes);
 
 // Home route
 app.get('/', (req, res) => {
+  const { courses } = require('./data/mockData');
+  const featuredCourses = courses.filter(course => course.featured);
+  
   res.render('pages/home', { 
     title: 'Online Course Platform',
-    user: req.user
+    user: req.user,
+    courses,
+    featuredCourses
   });
 });
 
