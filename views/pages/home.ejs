@@ -1,0 +1,252 @@
+<% 
+const { courses } = require('../../data/mockData');
+const featuredCourses = courses.filter(course => course.featured);
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Online Course Platform</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">CourseHub</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="nav-link active">Home</a>
+                    <a href="/courses" class="nav-link">Courses</a>
+                    
+                    <% if (user) { %>
+                        <a href="/dashboard" class="nav-link">Dashboard</a>
+                        <% if (user.role === 'admin' || user.role === 'owner') { %>
+                            <a href="/admin/courses" class="nav-link">Manage Courses</a>
+                        <% } %>
+                        <% if (user.role === 'owner') { %>
+                            <a href="/admin/users" class="nav-link">Manage Users</a>
+                        <% } %>
+                        
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-700 hover:text-primary">
+                                <i class="fas fa-user-circle text-xl"></i>
+                                <span><%= user.name %></span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-1">
+                                    <div class="px-4 py-2 text-sm text-gray-500 border-b">
+                                        <div class="font-medium"><%= user.name %></div>
+                                        <div class="text-xs capitalize"><%= user.role %></div>
+                                    </div>
+                                    <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </a>
+                                    <form action="/auth/logout" method="POST" class="block">
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <a href="/auth/login" class="btn btn-primary">Login</a>
+                        <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary to-secondary text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    Master IT Skills with Expert-Led Courses
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                    Join thousands of students learning cutting-edge technology skills through our comprehensive online courses
+                </p>
+                <div class="space-x-4">
+                    <a href="/courses" class="btn bg-white text-primary hover:bg-gray-100 text-lg px-8 py-3">
+                        Browse Courses
+                    </a>
+                    <% if (!user) { %>
+                        <a href="/auth/signup" class="btn bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3">
+                            Get Started Free
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2"><%= courses.length %></div>
+                    <div class="text-gray-600">Total Courses</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2">500+</div>
+                    <div class="text-gray-600">Active Students</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2">50+</div>
+                    <div class="text-gray-600">Expert Instructors</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-2">95%</div>
+                    <div class="text-gray-600">Completion Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Featured Courses</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Discover our most popular courses designed to help you advance your career in technology
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% featuredCourses.slice(0, 3).forEach(course => { %>
+                    <div class="card hover:shadow-lg transition-shadow duration-200">
+                        <div class="aspect-video bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                            <i class="fas fa-play-circle text-4xl text-gray-400"></i>
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded"><%= course.category %></span>
+                            <span class="text-sm font-medium text-<%= course.difficulty === 'Beginner' ? 'green' : course.difficulty === 'Intermediate' ? 'yellow' : 'red' %>-600">
+                                <%= course.difficulty %>
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2"><%= course.title %></h3>
+                        <p class="text-gray-600 mb-4"><%= course.description %></p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400">
+                                    <% for(let i = 0; i < 5; i++) { %>
+                                        <i class="fas fa-star <%= i < Math.floor(course.rating) ? '' : 'text-gray-300' %>"></i>
+                                    <% } %>
+                                </div>
+                                <span class="text-sm text-gray-500 ml-2">(<%= course.students %> students)</span>
+                            </div>
+                            <div class="text-lg font-bold text-primary">
+                                <%= course.price === 0 ? 'Free' : '$' + course.price %>
+                            </div>
+                        </div>
+                        <a href="/courses/<%= course.id %>" class="btn btn-primary w-full">
+                            View Course
+                        </a>
+                    </div>
+                <% }); %>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="/courses" class="btn btn-secondary text-lg px-8 py-3">
+                    View All Courses
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose CourseHub?</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-laptop-code text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Hands-on Learning</h3>
+                    <p class="text-gray-600">Learn by doing with practical projects and real-world scenarios</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Expert Instructors</h3>
+                    <p class="text-gray-600">Learn from industry professionals with years of experience</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Certification</h3>
+                    <p class="text-gray-600">Earn certificates to showcase your skills to employers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold">CourseHub</span>
+                    </div>
+                    <p class="text-gray-300">Your premier destination for IT education and professional development.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="/courses" class="text-gray-300 hover:text-white transition-colors">Courses</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/courses?category=Programming" class="text-gray-300 hover:text-white transition-colors">Programming</a></li>
+                        <li><a href="/courses?category=Data Science" class="text-gray-300 hover:text-white transition-colors">Data Science</a></li>
+                        <li><a href="/courses?category=Web Development" class="text-gray-300 hover:text-white transition-colors">Web Development</a></li>
+                        <li><a href="/courses?category=Security" class="text-gray-300 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-envelope mr-2"></i>info@coursehub.com</li>
+                        <li><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Education St, Learning City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2023 CourseHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+</body>
+</html>

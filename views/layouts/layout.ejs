@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Online Course Platform</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">CourseHub</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/courses" class="nav-link">Courses</a>
+                    
+                    <% if (user) { %>
+                        <a href="/dashboard" class="nav-link">Dashboard</a>
+                        <% if (user.role === 'admin' || user.role === 'owner') { %>
+                            <a href="/admin/courses" class="nav-link">Manage Courses</a>
+                        <% } %>
+                        <% if (user.role === 'owner') { %>
+                            <a href="/admin/users" class="nav-link">Manage Users</a>
+                        <% } %>
+                        
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-700 hover:text-primary">
+                                <i class="fas fa-user-circle text-xl"></i>
+                                <span><%= user.name %></span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-1">
+                                    <div class="px-4 py-2 text-sm text-gray-500 border-b">
+                                        <div class="font-medium"><%= user.name %></div>
+                                        <div class="text-xs capitalize"><%= user.role %></div>
+                                    </div>
+                                    <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </a>
+                                    <form action="/auth/logout" method="POST" class="block">
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <a href="/auth/login" class="btn btn-primary">Login</a>
+                        <a href="/auth/signup" class="btn btn-secondary">Sign Up</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold">CourseHub</span>
+                    </div>
+                    <p class="text-gray-300">Your premier destination for IT education and professional development.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="/courses" class="text-gray-300 hover:text-white transition-colors">Courses</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/courses?category=Programming" class="text-gray-300 hover:text-white transition-colors">Programming</a></li>
+                        <li><a href="/courses?category=Data Science" class="text-gray-300 hover:text-white transition-colors">Data Science</a></li>
+                        <li><a href="/courses?category=Web Development" class="text-gray-300 hover:text-white transition-colors">Web Development</a></li>
+                        <li><a href="/courses?category=Security" class="text-gray-300 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-envelope mr-2"></i>info@coursehub.com</li>
+                        <li><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>123 Education St, Learning City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2023 CourseHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
